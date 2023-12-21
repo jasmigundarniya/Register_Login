@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import { ErrorToast, SuccessToast } from "./Toast.js";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Otp = () => {
   const [otp, setOtp] = useState("");
