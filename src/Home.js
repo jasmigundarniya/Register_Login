@@ -5,20 +5,25 @@ import { MdDeleteForever } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+const Home = ({ onSearch }) => {
   const [userData, setUserData] = useState(null);
   const [uData, setUData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen1, setIsModalOpen1] = useState(false);
   const [del, setDel] = useState();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   const fetchData = async () => {
+    const data = {
+      search: searchTerm,
+    };
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         "http://192.168.29.218:8001/user/get_allUser",
+        data,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -30,7 +35,6 @@ const Home = () => {
       if (!response.data) {
         throw new Error("Network response was not ok");
       }
-
       setUserData(response?.data?.data?.user);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -39,7 +43,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchData();
-  }, [token]);
+  }, [token, searchTerm]);
 
   const handleUpdate = async () => {
     const data = {
@@ -116,16 +120,6 @@ const Home = () => {
     setUData({ ...uData, [name]: value });
   };
 
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handleSearch = () => {
-    // onSearch(searchTerm);
-  };
-
-  const handleInputChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
   return (
     <div style={{ margin: "0 100px" }}>
       <h1 style={{ padding: "0 20px" }}>User Details</h1>
@@ -135,12 +129,9 @@ const Home = () => {
           type="text"
           placeholder="Search..."
           value={searchTerm}
-          onChange={handleInputChange}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
         />
-        <button onClick={handleSearch} className="search-button">
-          Search
-        </button>
       </div>
 
       <div className="table-container">
