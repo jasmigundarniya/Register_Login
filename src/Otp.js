@@ -6,11 +6,11 @@ import { useNavigate } from "react-router-dom";
 const Otp = () => {
   const [otp, setOtp] = useState("");
   const navigate = useNavigate();
-const userid = localStorage.getItem("userid")
+  const userid = localStorage.getItem("userid");
   const handleLogin = () => {
     const data = {
-        id: userid,
-        signupOtp: otp,
+      id: userid,
+      signupOtp: otp,
     };
 
     fetch("http://192.168.29.218:8001/user/signupOtpVerify", {
@@ -22,7 +22,6 @@ const userid = localStorage.getItem("userid")
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("API Response:", data);
         if (data?.success === true) {
           navigate("/login");
           SuccessToast("Sign up Sucessfully");

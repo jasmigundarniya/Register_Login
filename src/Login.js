@@ -8,7 +8,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+    e.preventDefault();
+
     const data = {
       email: email,
       password: password,
@@ -23,11 +25,10 @@ const Login = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("API Response:", data);
         if (data?.success === true) {
           navigate("/home");
           SuccessToast("Login Sucessfully");
-          localStorage.setItem("token",data?.data?.token)
+          localStorage.setItem("token", data?.data?.token);
         } else {
           ErrorToast(data?.message);
         }
@@ -40,7 +41,7 @@ const Login = () => {
   return (
     <>
       <div className="login-container">
-        <form className="login-form">
+        <form className="login-form" onSubmit={handleLogin}>
           <h2>Login</h2>
           <div className="input-group">
             <label htmlFor="email">Email:</label>
@@ -62,7 +63,7 @@ const Login = () => {
               placeholder="Enter your password"
             />
           </div>
-          <button type="button" onClick={handleLogin}>
+          <button type="submit" onClick={handleLogin}>
             Login
           </button>
         </form>

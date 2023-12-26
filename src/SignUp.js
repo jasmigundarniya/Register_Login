@@ -28,10 +28,9 @@ const SignUp = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("API Response:", data);
         if (data?.success === true) {
           navigate("/otp");
-          localStorage.setItem("userid",data?.data?.userid)
+          localStorage.setItem("userid", data?.data?.userid);
           SuccessToast("Otp Send Sucessfully");
         } else {
           ErrorToast(data?.message);
