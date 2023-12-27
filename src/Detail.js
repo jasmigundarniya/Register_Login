@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { ApiPost } from "./API_data";
 
 const Detail = () => {
   const [data, setData] = useState();
@@ -13,21 +14,30 @@ const Detail = () => {
     const data = {
       userid: location?.state?.id,
     };
-    try {
-      const response = await axios.post(
-        "http://192.168.29.218:8001/user/getSingUser ",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setData(response?.data?.data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+
+    ApiPost("getSingUser", data)
+      .then((res) => {
+        setData(res?.data?.data);
+      })
+      .catch((e) => {
+        console.log("e", e);
+      });
+
+    // try {
+    //   const response = await axios.post(
+    //     "http://192.168.29.218:8001/user/getSingUser ",
+    //     data,
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   );
+    //   setData(response?.data?.data);
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
   };
 
   useEffect(() => {

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import { ErrorToast, SuccessToast } from "./Toast.js";
 import { Link, useNavigate } from "react-router-dom";
+import { ApiPost } from "./API_data.js";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -19,26 +20,41 @@ const SignUp = () => {
       password: password,
     };
 
-    fetch("http://192.168.29.218:8001/user/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data?.success === true) {
+    ApiPost("signup", data)
+      .then((res) => {
+        if (res?.data?.success === true) {
           navigate("/otp");
-          localStorage.setItem("userid", data?.data?.userid);
+          localStorage.setItem("userid", res?.data?.data?.userid);
           SuccessToast("Otp Send Sucessfully");
         } else {
-          ErrorToast(data?.message);
+          ErrorToast(res?.data?.message);
         }
       })
-      .catch((error) => {
-        console.error("Error:", error);
+      .catch((e) => {
+        console.log("e", e);
+        ErrorToast(e?.res?.data?.message);
       });
+
+    // fetch("http://192.168.29.218:8001/user/signup", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(data),
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     if (data?.success === true) {
+    //       navigate("/otp");
+    //       localStorage.setItem("userid", data?.data?.userid);
+    //       SuccessToast("Otp Send Sucessfully");
+    //     } else {
+    //       ErrorToast(data?.message);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error:", error);
+    //   });
   };
 
   return (

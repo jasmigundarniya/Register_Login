@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import { ErrorToast, SuccessToast } from "./Toast.js";
 import { Link, useNavigate } from "react-router-dom";
+import { ApiPost } from "./API_data.js";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,25 +17,39 @@ const Login = () => {
       password: password,
     };
 
-    fetch("http://192.168.29.218:8001/user/userLogin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data?.success === true) {
+    // fetch("http://192.168.29.218:8001/user/userLogin", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(data),
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     if (data?.success === true) {
+    //       navigate("/home");
+    //       SuccessToast("Login Sucessfully");
+    //       localStorage.setItem("token", data?.data?.token);
+    //     } else {
+    //       ErrorToast(data?.message);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error:", error);
+    //   });
+
+    ApiPost("userLogin", data)
+      .then((res) => {
+        if (res?.data?.success === true) {
+          localStorage?.setItem("token", res?.data?.data?.token);
           navigate("/home");
           SuccessToast("Login Sucessfully");
-          localStorage.setItem("token", data?.data?.token);
         } else {
-          ErrorToast(data?.message);
+          ErrorToast(res?.data?.message);
         }
       })
-      .catch((error) => {
-        console.error("Error:", error);
+      .catch((e) => {
+        ErrorToast(e?.data?.message);
       });
   };
 

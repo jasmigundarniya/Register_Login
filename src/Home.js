@@ -4,6 +4,7 @@ import { RiEdit2Fill } from "react-icons/ri";
 import { MdDeleteForever } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { ApiPost } from "./API_data";
 
 const Home = ({ onSearch }) => {
   const [userData, setUserData] = useState(null);
@@ -16,29 +17,38 @@ const Home = ({ onSearch }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  const fetchData = async () => {
+  const fetchData = () => {
     const data = {
       search: searchTerm,
     };
-    try {
-      const response = await axios.post(
-        "http://192.168.29.218:8001/user/get_allUser",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
 
-      if (!response.data) {
-        throw new Error("Network response was not ok");
-      }
-      setUserData(response?.data?.data?.user);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    ApiPost("get_allUser", data)
+      .then((res) => {
+        setUserData(res?.data?.data?.user);
+      })
+      .catch((e) => {
+        console.log("e", e);
+      });
+
+    // try {
+    //   const response = await axios.post(
+    //     "http://192.168.29.218:8001/user/get_allUser",
+    //     data,
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   );
+
+    //   if (!response.data) {
+    //     throw new Error("Network response was not ok");
+    //   }
+    //   setUserData(response?.data?.data?.user);
+    // } catch (error) {
+    //   console.error("Error fetching data:", error);
+    // }
   };
 
   useEffect(() => {
@@ -53,49 +63,74 @@ const Home = ({ onSearch }) => {
       email: uData?.email,
       phone: uData?.phone,
     };
-    try {
-      const response = await axios.post(
-        "http://192.168.29.218:8001/user/updateUser",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
 
-      if (response?.data?.success === true) {
-        closeModal();
-        fetchData();
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    ApiPost("updateUser", data)
+      .then((res) => {
+        if (res?.data?.success === true) {
+          closeModal();
+          fetchData();
+        }
+      })
+      .catch((e) => {
+        console.log("e", e);
+      });
+
+    // try {
+    //   const response = await axios.post(
+    //     "http://192.168.29.218:8001/user/updateUser",
+    //     data,
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   );
+
+    //   if (response?.data?.success === true) {
+    //     closeModal();
+    //     fetchData();
+    //   }
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
   };
+
   const handleDelete = async () => {
     const data = {
       userid: del?._id,
     };
-    try {
-      const response = await axios.post(
-        "http://192.168.29.218:8001/user/deleteUser",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
 
-      if (response?.data?.success === true) {
-        closeModal1();
-        fetchData();
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    ApiPost("deleteUser", data)
+      .then((res) => {
+        if (res?.data?.success === true) {
+          closeModal1();
+          fetchData();
+        }
+      })
+      .catch((e) => {
+        console.log("e", e);
+      });
+
+    // try {
+    //   const response = await axios.post(
+    //     "http://192.168.29.218:8001/user/deleteUser",
+    //     data,
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   );
+
+    //   if (response?.data?.success === true) {
+    //     closeModal1();
+    //     fetchData();
+    //   }
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
   };
 
   const openModal = (val) => {
